@@ -1,0 +1,80 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+<style>
+    .user-profile {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .user-profile-header {
+        margin-bottom: 20px;
+    }
+
+    .user-profile img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+    }
+
+    .user-profile h2 {
+        margin: 5px 0;
+    }
+
+    .user-profile-posts {
+        background-color: #f0f0f0;
+        padding: 20px;
+    }
+
+    .user-profile-posts h3 {
+        font-size: 20px;
+    }
+
+    .post {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin: 10px 0;
+    }
+</style>
+<div class="user-profile">
+    <div class="user-profile-header">
+        <img src="{{ user_profile.photo_url }}" alt="{{ user.username }}">
+        <h2>{{ user.username }}</h2>
+        <p>{{ user.first_name }} {{ user.last_name }}</p>
+        <!-- Add other user information as needed -->
+    </div>
+    <div class="user-profile-posts">
+        <h3>Posts</h3>
+        {% for post in user_posts %}
+        <div class="post">
+          <div class="post-header">
+            <img src="{{ post.author.profile.photo_url }}" alt="{{ post.author.username }}">
+            <p>{{ post.author.username }}</p>
+          </div>
+          <div class="post-body">
+            <p>{{ post.text }}</p>
+          </div>
+          <div class="post-footer">
+          
+            <button class="like-button" data-post="{{ post.id }}">
+                <img src="{% if post.likes.filter(id=request.user.id) %} {% static '../../../../static/network/heart1.png' %} {% else %} {% static '../../../../static/network/heart2.png' %} {% endif %}" alt="Like">
+            </button>
+  
+            <p class="like-count">Likes: {{ post.likes.all.count }}</p>
+
+            <button class="comment-button">Comments</button>
+          </div>
+  
+          <div class="comments">
+            {% for comment in post.comment_set.all %}
+              <div class="comment">
+                <p>{{ comment.user.username }}: {{ comment.text }}</p>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+</div>
+{% endblock %}

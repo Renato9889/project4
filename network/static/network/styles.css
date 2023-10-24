@@ -1,0 +1,172 @@
+body {
+    padding: 0px;
+}
+
+h2 {
+    padding-left: 10px;
+}
+
+
+.logo{
+    background-color: #BEDAE6;
+}
+
+.logo img{
+    width: 200px;
+}
+
+.logintext{
+    font-size: 20px;
+    position: absolute;
+    top: 15px;
+    right: 10px;
+}
+
+.navlog{
+    right: 10px;
+}
+
+.topnav {
+    background-color: #333;
+    overflow: hidden;
+}
+  
+.topnav a {
+    float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.topnav a:hover {
+    background-color: #134ABA;
+    color: rgb(169, 223, 246);
+}
+
+.navlog{
+    right: 10px;
+}
+
+.topnav select{
+    text-align: justify;
+    background-color: #333;
+    float: left;
+    color: rgb(255, 255, 255);
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+    border: none;
+}
+
+.topnav select:hover {
+    background-color: #FFDE59;
+    color: black;
+    border: none;
+}
+
+/* Estilo para o contêiner */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  form {
+    margin-bottom: 20px;
+  }
+  
+  form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+  }
+  
+  form button {
+    background-color: #007BFF;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .post {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .post-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .post-header img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  .post-body p {
+    margin-bottom: 10px;
+  }
+  
+  .post-footer button {
+    background-color: #007BFF;
+    color: #fff;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+  
+  /* Estilo para os comentários */
+  .comment-form {
+    margin-top: 10px;
+  }
+  
+  .comment-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+  }
+  
+  .comment-form button {
+    background-color: #007BFF;
+    color: #fff;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 5px;
+  }
+  
+  .comments {
+    display: none;
+  }
+  
+  .comment p {
+    margin-bottom: 5px;
+  }
+
+.like-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.like-button img {
+    width: 24px;
+    height: 24px; 
+}

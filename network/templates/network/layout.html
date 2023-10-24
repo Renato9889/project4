@@ -1,0 +1,40 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}Social Network{% endblock %}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link href="{% static 'network/styles.css' %}" rel="stylesheet">
+    </head>
+    <body>
+
+        <div class="logo">
+            <img src="../../static/network/araraNetwork.png" alt="Network">
+            {% if user.is_authenticated %}
+                <p class="logintext">Signed in as <strong>{{ user.username }}</strong>.</p> 
+            {% else %}
+                <p class="logintext">Not signed in.</p>
+            {% endif %}
+        </div>
+           
+        <div class="topnav">
+            {% if user.is_authenticated %}
+                <a href="{% url 'profile' user.id %}">Profile</a>
+                <a href="{% url 'all_posts' %}">All Post</a>
+                <a href="{% url 'following' %}">Following</a>
+                <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+            {% else %}
+                <a href="{% url 'all_posts' %}">All Post</a>
+                <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                <a class="nav-link" href="{% url 'register' %}">Register</a>
+            {% endif %}
+        </div>       
+        <hr>
+
+        <div class="body">
+            {% block body %}
+            {% endblock %}
+        </div>
+    </body>
+</html>
