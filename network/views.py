@@ -3,20 +3,17 @@ from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from .models import Post, Comment, Profile
+from .models import Post, Comment, Profile, User
 from .forms import PostForm, CommentForm
 from django.db import models
 from django.db.models import Count
 
 
-from .models import User
-
-
 def index(request):
     if not request.user.is_authenticated:
-        posts = Post.objects.all()
+        posts = Post.objects.order_by('-id')
         return render(request, 'network/index.html', {'posts': posts})
-    posts = Post.objects.annotate(user_liked=Count('likes', filter= models.Q(likes=request.user)))
+    posts = Post.objects.annotate(user_liked=Count('likes', filter=models.Q(likes=request.user))).order_by('-id')
     return render(request, 'network/index.html', {'posts': posts})
 
 

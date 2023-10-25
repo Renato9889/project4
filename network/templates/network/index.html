@@ -56,5 +56,45 @@
           </div>
         </div>
       {% endfor %}
+      <div class="pagination">
+        <button id="prevPage" disabled>Previous</button>
+        <span id="pageInfo">Page 1</span>
+        <button id="nextPage">Next</button>
+      </div>
     </div>
+    <script>
+      let currentPage = 1;
+      const postsPerPage = 10;
+      function updatePosts() {
+          const posts = document.querySelectorAll('.post');
+          const totalPages = Math.ceil(posts.length / postsPerPage);
+          posts.forEach((post, index) => {
+              if (index < (currentPage * postsPerPage) && index >= ((currentPage - 1) * postsPerPage)) {
+                  post.style.display = 'block';
+              } else {
+                  post.style.display = 'none';
+              }
+          });
+          document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+          document.getElementById('prevPage').disabled = (currentPage === 1);
+          document.getElementById('nextPage').disabled = (currentPage === totalPages);
+      }
+      document.getElementById('prevPage').addEventListener('click', () => {
+          if (currentPage > 1) {
+              currentPage--;
+              updatePosts();
+          }
+      });
+      document.getElementById('nextPage').addEventListener('click', () => {
+          const posts = document.querySelectorAll('.post');
+          const totalPages = Math.ceil(posts.length / postsPerPage);
+          if (currentPage < totalPages) {
+              currentPage++;
+              updatePosts();
+          }
+      });
+      
+      updatePosts();
+  </script>
+  
 {% endblock %}

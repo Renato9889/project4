@@ -20,7 +20,7 @@ class User(AbstractUser):
 
 class Post(models.Model):
     id = models.BigAutoField(primary_key=True)
-    author = models.OneToOneField(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
