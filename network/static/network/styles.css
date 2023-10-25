@@ -4,15 +4,19 @@ body {
 
 h2 {
     padding-left: 10px;
+    display: flex;
+    justify-content: center;
 }
 
-
-.logo{
-    background-color: #BEDAE6;
+.logo {
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+  background-color: #BEDAE6;
+  height: 200px; 
 }
-
-.logo img{
-    width: 200px;
+.logo img {
+  width: 200px;
 }
 
 .logintext{
@@ -29,6 +33,8 @@ h2 {
 .topnav {
     background-color: #333;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
 }
   
 .topnav a {
@@ -62,102 +68,101 @@ h2 {
 }
 
 .topnav select:hover {
-    background-color: #FFDE59;
+    background-color: #010dff;
     color: black;
     border: none;
 }
 
-/* Estilo para o contêiner */
 .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-  }
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
   
-  form {
-    margin-bottom: 20px;
-  }
+form {
+  margin-bottom: 20px;
+}
   
-  form textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    resize: vertical;
-  }
+form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
   
-  form button {
-    background-color: #007BFF;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
+form button {
+  background-color: #134ABA;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+}
 
-  .post {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin-bottom: 20px;
-  }
+.post {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 20px;
+}
   
-  .post-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
+.post-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
   
-  .post-header img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
-  }
+.post-header img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+}
   
-  .post-body p {
-    margin-bottom: 10px;
-  }
+.post-body p {
+  margin-bottom: 10px;
+}
   
-  .post-footer button {
-    background-color: #007BFF;
-    color: #fff;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-right: 10px;
-  }
+.post-footer button {
+  background-color: #134ABA;
+  color: #fff;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  margin-right: 10px;
+}
   
-  /* Estilo para os comentários */
-  .comment-form {
-    margin-top: 10px;
-  }
+.comment-form {
+  margin-top: 10px;
+}
   
-  .comment-form textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    resize: vertical;
-  }
+.comment-form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
   
-  .comment-form button {
-    background-color: #007BFF;
-    color: #fff;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 5px;
-  }
+.comment-form button {
+  background-color: #134ABA;
+  color: #fff;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  margin-top: 5px;
+}
   
-  .comments {
-    display: none;
-  }
+.comments {
+  display: none;
+}
   
-  .comment p {
-    margin-bottom: 5px;
-  }
+.comment p {
+  margin-bottom: 5px;
+}
 
 .like-button {
     background-color: transparent;

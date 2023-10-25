@@ -13,7 +13,11 @@ from .models import User
 
 
 def index(request):
-    return render(request, "network/index.html")
+    if not request.user.is_authenticated:
+        posts = Post.objects.all()
+        return render(request, 'network/index.html', {'posts': posts})
+    posts = Post.objects.annotate(user_liked=Count('likes', filter= models.Q(likes=request.user)))
+    return render(request, 'network/index.html', {'posts': posts})
 
 
 def login_view(request):
@@ -47,6 +51,7 @@ def register(request):
         last_name = request.POST["lastname"]
         username = request.POST["username"]
         email = request.POST["email"]
+        photo = request.POST["photo"]
 
         # Ensure password matches confirmation
         password = request.POST["password"]
@@ -62,7 +67,8 @@ def register(request):
             user.first_name = first_name
             user.last_name = last_name
             user.save()
-            Profile.objects.create(user=user)
+            Profile.objects.create(user=user, photo_url=photo)
+            
         except IntegrityError:
             return render(request, "network/register.html", {
                 "message": "Username already taken."
@@ -73,6 +79,8 @@ def register(request):
         return render(request, "network/register.html")
 
 def profile(request, user_id):
+    if not request.user.is_authenticated:
+        return redirect('login')
     user = get_object_or_404(User, pk=user_id)
     user_profile = get_object_or_404(Profile, user=user)
     user_posts = Post.objects.filter(author=user)
@@ -86,32 +94,34 @@ def profile(request, user_id):
 def following(request):
     pass 
 
-
-def all_posts(request):
-    posts = Post.objects.annotate(user_liked=Count('likes', filter= models.Q(likes=request.user)))
-    return render(request, 'network/index.html', {'posts': posts})
-
+    
 def new_post(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
     if request.method == 'POST':
         form = PostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
             post.save()
-            return redirect('all_posts')
+            return redirect('index')
     else:
         form = PostForm()
     return render(request, 'new_post.html', {'form': form})
 
 def like_post(request, post_id):
+    if not request.user.is_authenticated:
+        return redirect('login')
     post = get_object_or_404(Post, pk=post_id)
     if request.user in post.likes.all():
         post.likes.remove(request.user)
     else:
         post.likes.add(request.user)
-    return redirect('all_posts')
+    return redirect('index')
 
 def add_comment(request, post_id):
+    if not request.user.is_authenticated:
+        return redirect('login')
     post = Post.objects.get(pk=post_id)
     if request.method == 'POST':
         form = CommentForm(request.POST)
@@ -120,4 +130,4 @@ def add_comment(request, post_id):
             comment.post = post
             comment.user = request.user
             comment.save()
-    return redirect('all_posts')
+    return redirect('index')

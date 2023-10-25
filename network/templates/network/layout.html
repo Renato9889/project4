@@ -8,7 +8,6 @@
         <link href="{% static 'network/styles.css' %}" rel="stylesheet">
     </head>
     <body>
-
         <div class="logo">
             <img src="../../static/network/araraNetwork.png" alt="Network">
             {% if user.is_authenticated %}
@@ -21,11 +20,11 @@
         <div class="topnav">
             {% if user.is_authenticated %}
                 <a href="{% url 'profile' user.id %}">Profile</a>
-                <a href="{% url 'all_posts' %}">All Post</a>
+                <a href="{% url 'index' %}">All Post</a>
                 <a href="{% url 'following' %}">Following</a>
                 <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
             {% else %}
-                <a href="{% url 'all_posts' %}">All Post</a>
+                <a href="{% url 'index' %}">All Post</a>
                 <a class="nav-link" href="{% url 'login' %}">Log In</a>
                 <a class="nav-link" href="{% url 'register' %}">Register</a>
             {% endif %}

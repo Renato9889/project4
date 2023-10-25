@@ -1,13 +1,18 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
+{% load static %}
 <style>
     .user-profile {
-        text-align: center;
+        margin: 0 auto;
+        width: 70%; 
         padding: 20px;
+        background-color: #f0f0f0; 
+        border: 1px solid #ccc; 
     }
 
     .user-profile-header {
+        text-align: center;
         margin-bottom: 20px;
     }
 
@@ -15,6 +20,7 @@
         width: 100px;
         height: 100px;
         border-radius: 50%;
+        object-fit: cover;
     }
 
     .user-profile h2 {
@@ -22,8 +28,7 @@
     }
 
     .user-profile-posts {
-        background-color: #f0f0f0;
-        padding: 20px;
+        margin-top: 20px; /* Espaço entre o perfil e os posts */
     }
 
     .user-profile-posts h3 {
@@ -35,6 +40,32 @@
         border: 1px solid #ccc;
         padding: 10px;
         margin: 10px 0;
+    }
+    .like-button {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    .like-button img {
+      width: 24px;
+      height: 24px; 
+    }
+    .post-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+      
+    .post-header img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+      
+    .post-body p {
+      margin-bottom: 10px;
     }
 </style>
 <div class="user-profile">
@@ -55,15 +86,13 @@
           <div class="post-body">
             <p>{{ post.text }}</p>
           </div>
-          <div class="post-footer">
-          
-            <button class="like-button" data-post="{{ post.id }}">
-                <img src="{% if post.likes.filter(id=request.user.id) %} {% static '../../../../static/network/heart1.png' %} {% else %} {% static '../../../../static/network/heart2.png' %} {% endif %}" alt="Like">
-            </button>
-  
-            <p class="like-count">Likes: {{ post.likes.all.count }}</p>
+          <div>
+            <a class="like-count">Likes:{{ post.likes.all.count }}</a>
+            <p></p>
 
-            <button class="comment-button">Comments</button>
+            <a class="post-footer">
+             <button class="comment-button">Comments</button>
+            </a>
           </div>
   
           <div class="comments">
