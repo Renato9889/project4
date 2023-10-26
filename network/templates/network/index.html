@@ -1,10 +1,8 @@
 {% extends "network/layout.html" %}
-
 {% block body %}
 {% load static %}
-    <h2>Time Line</h2>
     <div class="container">
-    
+
       <form method="post" action="{% url 'new_post' %}">
         {% csrf_token %}
         <div class="form-group">
@@ -30,30 +28,44 @@
               </a>
               <a class="like-count">{{ post.likes.all.count }}</a>
            </button>
-
-            <p></p>
-
-            <a class="post-footer">
-              <button class="comment-button">Comments</button>
-            </a>
+           <p class="post-date">{{ post.created_at}}</p>
           </div>
-  
+          <div class="comments">
+            {% for comment in post.comment_set.all %}
+            <div class="comment">
+                <div class="comment-header">
+                    <img src="{{ comment.user.profile.photo_url }}" alt="{{ comment.user.username }}">
+                    <div class="comments-info">
+                        <p><strong>{{ comment.user.username }}</strong></p>
+                    </div>
+                </div>
+                <div class="comment-body">
+                    <p>{{ comment.text }}</p>
+                </div>
+                <div>
+                  
+                </div>
+                <button class="like-button" data-comment="{{ comment.id }}">
+                  <a href="{% url 'like_comment' comment.id %}">
+                    <img src="{% if comment.user_liked > 0 %}{% static '../../../../static/network/heart1.png' %}{% else %}{% static '../../../../static/network/heart2.png' %}{% endif %}" alt="Like">
+                  </a>
+                  <a class="like-count">{{ comment.likes.all.count }}</a>
+                </button>
+                <div>
+                  <p class="comment-date">{{ comment.created_at}}</p>
+                </div>
+            </div>
+            {% endfor %}
+          </div>
     
           <form class="comment-form" method="post" action="{% url 'add_comment' post.id %}">
             {% csrf_token %}
             <div class="form-group">
-              <textarea name="texto" placeholder="Add Comment" required></textarea>
+              <textarea name="text" placeholder="Add Comment..." required></textarea>
             </div>
             <button type="submit">Comment</button>
           </form>
-  
-          <div class="comments">
-            {% for comment in post.comment_set.all %}
-              <div class="comment">
-                <p>{{ comment.user.username }}: {{ comment.text }}</p>
-              </div>
-            {% endfor %}
-          </div>
+          
         </div>
       {% endfor %}
       <div class="pagination">
@@ -63,6 +75,17 @@
       </div>
     </div>
     <script>
+      document.querySelectorAll('.comment-button').forEach(button => {
+        button.addEventListener('click', () => {
+            const postID = button.getAttribute('data-postid');
+            const comments = document.querySelector(`#post-${postID} .comments`);
+            if (comments.style.display === 'none' || comments.style.display === '') {
+                comments.style.display = 'block';
+            } else {
+                comments.style.display = 'none';
+            }
+        });
+      });
       let currentPage = 1;
       const postsPerPage = 10;
       function updatePosts() {
@@ -95,6 +118,6 @@
       });
       
       updatePosts();
-  </script>
-  
-{% endblock %}
+    </script>
+
+  {% endblock %}

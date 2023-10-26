@@ -1,5 +1,6 @@
 body {
     padding: 0px;
+    background-color: #BEDAE6;
 }
 
 h2 {
@@ -13,7 +14,7 @@ h2 {
   justify-content: center; 
   align-items: center; 
   background-color: #BEDAE6;
-  height: 200px; 
+  height: 200px;
 }
 .logo img {
   width: 200px;
@@ -81,6 +82,8 @@ h2 {
   
 form {
   margin-bottom: 20px;
+  background-color: white;
+  padding: 20px;
 }
   
 form textarea {
@@ -101,8 +104,9 @@ form button {
 }
 
 .post {
+  background-color: white;
   border: 1px solid #ccc;
-  padding: 10px;
+  padding: 20px;
   margin-bottom: 20px;
 }
   
@@ -110,6 +114,7 @@ form button {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
+  font-weight: bold;
 }
   
 .post-header img {
@@ -122,6 +127,11 @@ form button {
   
 .post-body p {
   margin-bottom: 10px;
+}
+.post-date {
+  color: #999;
+  font-size: 10px;
+  padding-left: 610px;
 }
   
 .post-footer button {
@@ -136,6 +146,7 @@ form button {
   
 .comment-form {
   margin-top: 10px;
+  padding-left: 50px;
 }
   
 .comment-form textarea {
@@ -156,14 +167,6 @@ form button {
   margin-top: 5px;
 }
   
-.comments {
-  display: none;
-}
-  
-.comment p {
-  margin-bottom: 5px;
-}
-
 .like-button {
     background-color: transparent;
     border: none;
@@ -196,4 +199,44 @@ form button {
 .pagination span{
   margin: 0 10px;
   background-color: transparent;
+}
+
+.comments{
+  padding-left: 50px;
+  padding-right: 20px;
+}
+.comment {
+  border: 1px solid #ccc;
+  background-color: #f3f3f3;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.comment-header img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+}
+
+.comment-info p {
+  margin: 0;
+  font-weight: bold;
+}
+
+.comment-date {
+  color: #999;
+  font-size: 10px;
+  padding-left: 500px;
+}
+
+.comments-body p {
+  margin-bottom: 10px;
 }

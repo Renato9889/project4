@@ -116,15 +116,34 @@ def like_post(request, post_id):
         post.likes.add(request.user)
     return redirect('index')
 
+def like_comment(request, comment_id):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    
+    comment = get_object_or_404(Comment, pk=comment_id)
+    
+    if request.user in comment.likes.all():
+        comment.likes.remove(request.user)
+        comment.user_liked = 0 
+    else:
+        comment.likes.add(request.user)
+        comment.user_liked = 1 
+    
+    comment.save()
+    return redirect('index')
+
 def add_comment(request, post_id):
     if not request.user.is_authenticated:
         return redirect('login')
-    post = Post.objects.get(pk=post_id)
+
+    post = get_object_or_404(Post, pk=post_id)
+
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
-            comment.post = post
             comment.user = request.user
+            comment.post = post
             comment.save()
+            return redirect('index')
     return redirect('index')
