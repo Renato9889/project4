@@ -47,7 +47,7 @@
                 </div>
                 <button class="like-button" data-comment="{{ comment.id }}">
                   <a href="{% url 'like_comment' comment.id %}">
-                    <img src="{% if comment.user_liked > 0 %}{% static '../../../../static/network/heart1.png' %}{% else %}{% static '../../../../static/network/heart2.png' %}{% endif %}" alt="Like">
+                    <img src="{% if comment.user_liked > 0 %}{% static '../../../../static/network/heart1.png' %}{% else %}{% static '../../../../static/network/heart2.png' %}{% endif %}"  alt="Like">
                   </a>
                   <a class="like-count">{{ comment.likes.all.count }}</a>
                 </button>

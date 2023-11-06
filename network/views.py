@@ -124,12 +124,8 @@ def like_comment(request, comment_id):
     
     if request.user in comment.likes.all():
         comment.likes.remove(request.user)
-        comment.user_liked = 0 
     else:
         comment.likes.add(request.user)
-        comment.user_liked = 1 
-    
-    comment.save()
     return redirect('index')
 
 def add_comment(request, post_id):
