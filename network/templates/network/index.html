@@ -22,15 +22,13 @@
             <p>{{ post.text }}</p>
           </div>
           <div>
-            <button class="like-button" data-post="{{ post.id }}">
-              <a href="{% url 'like_post' post.id %}">
-                  <img src="{% if post.user_liked > 0 %}{% static '../../../../static/network/heart1.png' %}{% else %}{% static '../../../../static/network/heart2.png' %}{% endif %}" alt="Like">
-              </a>
-              <a class="like-count">{{ post.likes.all.count }}</a>
-           </button>
-           <p class="post-date">{{ post.created_at}}</p>
+            <button class="like-button" data-post="{{ post.id }}" onclick="likePost('{{post.id}}')">
+              <img src="{% if request.user in post.likes.all %}{% static 'network/heart1.png' %}{% else %}{% static 'network/heart2.png' %}{% endif %}"  alt="Like">
+            </button>
+            <a class="like-count">{{ post.likes.all.count }}</a>
+            <p class="post-date">{{ post.created_at}}</p>
           </div>
-          <div class="comments">
+          <div data-post="{{ post.id }}" class="comments">
             {% for comment in post.comment_set.all %}
             <div class="comment">
                 <div class="comment-header">
@@ -43,29 +41,24 @@
                     <p>{{ comment.text }}</p>
                 </div>
                 <div>
-                  
-                </div>
-                <button class="like-button" data-comment="{{ comment.id }}">
-                  <a href="{% url 'like_comment' comment.id %}">
-                    <img src="{% if comment.user_liked > 0 %}{% static '../../../../static/network/heart1.png' %}{% else %}{% static '../../../../static/network/heart2.png' %}{% endif %}"  alt="Like">
-                  </a>
+                  <button class="like-button" data-post="{{ comment.id }}" onclick="likeComment('{{comment.id}}')">
+                    <img src="{% if request.user in comment.likes.all %}{% static 'network/heart1.png' %}{% else %}{% static 'network/heart2.png' %}{% endif %}"  alt="Like">
+                  </button>
                   <a class="like-count">{{ comment.likes.all.count }}</a>
-                </button>
+                </div>
                 <div>
                   <p class="comment-date">{{ comment.created_at}}</p>
                 </div>
             </div>
             {% endfor %}
           </div>
-    
-          <form class="comment-form" method="post" action="{% url 'add_comment' post.id %}">
+          <form class="comment-form" data-post="{{ post.id }}" method="post" action="{% url 'add_comment' post.id %}" >
             {% csrf_token %}
             <div class="form-group">
-              <textarea name="text" placeholder="Add Comment..." required></textarea>
+                <textarea name="text" placeholder="Add Comment..." required></textarea>
             </div>
-            <button type="submit">Comment</button>
-          </form>
-          
+            <button type="button" onclick="addComment('{{ post.id }}', this.parentNode)">Comment</button>
+        </form>
         </div>
       {% endfor %}
       <div class="pagination">
@@ -118,6 +111,53 @@
       });
       
       updatePosts();
+
+      function likePost(postID) {
+        fetch(`/like/${postID}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    return;
+                }
+
+                const likeButton = document.querySelector(`[data-post="${postID}"]`);
+                const likeIcon = likeButton.querySelector('img');
+                const likeCount = likeButton.nextElementSibling;
+                likeIcon.src = data.liked ? '{% static "network/heart1.png" %}' : '{% static "network/heart2.png" %}';
+                likeCount.textContent = data.likes_count;
+            });
+      }
+
+      function likeComment(postID) {
+        fetch(`/like_comment/${postID}/`)
+            .then(response => response.json())
+            .then(data => {
+              if (data.error) {
+                return;
+              }
+              const likeButton = document.querySelector(`[data-post="${postID}"]`);
+              const likeIcon = likeButton.querySelector('img');
+              const likeCount = likeButton.nextElementSibling;
+              likeIcon.src = data.liked ? '{% static "network/heart1.png" %}' : '{% static "network/heart2.png" %}';
+              likeCount.textContent = data.likes_count;
+            });
+      }
+      function addComment(postID, formElement) {
+        const formData = new FormData(formElement);
+        return fetch(`/add_comment/${postID}/`, {
+          method: 'POST',
+          body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+          formElement.reset();
+          if (data.success) {
+            const commentsContainer = document.querySelector(`[data-post="${postID}"] .comments`);
+            location.reload();
+          }
+          return data;
+        })
+      }
     </script>
 
   {% endblock %}

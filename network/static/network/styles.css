@@ -1,6 +1,8 @@
 body {
+    text-size-adjust: 100%;
     padding: 0px;
     background-color: #BEDAE6;
+    -webkit-text-size-adjust: 100%;
 }
 
 h2 {
@@ -171,7 +173,7 @@ form button {
     background-color: transparent;
     border: none;
     cursor: pointer;
-    margin-right: 10px;
+    margin-right: 0px;
 }
 
 .like-button img {
@@ -179,6 +181,12 @@ form button {
     height: 24px; 
 }
 
+.like-count {
+  color: #000000;
+  font-weight: bold;
+  margin-left: 0px;
+  font-size: 14px;
+}
 .pagination {
   text-align: center;
   display: flex;

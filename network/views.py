@@ -7,6 +7,7 @@ from .models import Post, Comment, Profile, User
 from .forms import PostForm, CommentForm
 from django.db import models
 from django.db.models import Count
+from django.http import JsonResponse
 
 
 def index(request):
@@ -108,29 +109,37 @@ def new_post(request):
 
 def like_post(request, post_id):
     if not request.user.is_authenticated:
-        return redirect('login')
+        return JsonResponse({"error": "You must be logged in to like posts."}, status=403)
+    
     post = get_object_or_404(Post, pk=post_id)
+    
     if request.user in post.likes.all():
         post.likes.remove(request.user)
+        liked = False
     else:
         post.likes.add(request.user)
-    return redirect('index')
+        liked = True
+    
+    return JsonResponse({"liked": liked, "likes_count": post.likes.count()})
 
 def like_comment(request, comment_id):
     if not request.user.is_authenticated:
-        return redirect('login')
+        return JsonResponse({"error": "You must be logged in to like posts."}, status=403)
     
     comment = get_object_or_404(Comment, pk=comment_id)
     
     if request.user in comment.likes.all():
         comment.likes.remove(request.user)
+        liked = False
     else:
         comment.likes.add(request.user)
-    return redirect('index')
+        liked = True
+    
+    return JsonResponse({"liked": liked, "likes_count": comment.likes.count()})
 
 def add_comment(request, post_id):
     if not request.user.is_authenticated:
-        return redirect('login')
+        return JsonResponse({"error": "You must be logged in to add comments."}, status=403)
 
     post = get_object_or_404(Post, pk=post_id)
 
@@ -141,5 +150,6 @@ def add_comment(request, post_id):
             comment.user = request.user
             comment.post = post
             comment.save()
-            return redirect('index')
-    return redirect('index')
+            return JsonResponse({'success': True})
+
+    return JsonResponse({"error": "Invalid form data."}, status=400)

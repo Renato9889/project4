@@ -5,7 +5,7 @@
 <style>
     .user-profile {
         margin: 0 auto;
-        width: 70%; 
+        width: 56%; 
         padding: 20px;
         background-color: #f0f0f0; 
         border: 1px solid #ccc; 
@@ -15,14 +15,12 @@
         text-align: center;
         margin-bottom: 20px;
     }
-
-    .user-profile img {
+    .profile-img {
         width: 100px;
         height: 100px;
         border-radius: 50%;
         object-fit: cover;
     }
-
     .user-profile h2 {
         margin: 5px 0;
     }
@@ -30,50 +28,15 @@
     .user-profile-posts {
         margin-top: 20px;
     }
-
     .user-profile-posts h3 {
         font-size: 20px;
-    }
-
-    .post {
-        background-color: #fff;
-        border: 1px solid #ccc;
-        padding: 10px;
-        margin: 10px 0;
-    }
-    .like-button {
-      background-color: transparent;
-      border: none;
-      cursor: pointer;
-      margin-right: 10px;
-    }
-    .like-button img {
-      width: 24px;
-      height: 24px; 
-    }
-    .post-header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-      
-    .post-header img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      margin-right: 10px;
-    }
-      
-    .post-body p {
-      margin-bottom: 10px;
     }
 </style>
 <div class="user-profile">
     <div class="user-profile-header">
-        <img src="{{ user_profile.photo_url }}" alt="{{ user.username }}">
+        <img class="profile-img" src="{{ user_profile.photo_url }}" alt="{{ user.username }}">
         <h2>{{ user.username }}</h2>
         <p>{{ user.first_name }} {{ user.last_name }}</p>
-        <!-- Add other user information as needed -->
     </div>
     <div class="user-profile-posts">
         <h3>Posts</h3>
@@ -86,20 +49,31 @@
           <div class="post-body">
             <p>{{ post.text }}</p>
           </div>
-          <div>
-            <a class="like-count">Likes:{{ post.likes.all.count }}</a>
-            <p></p>
-
-            <a class="post-footer">
-             <button class="comment-button">Comments</button>
-            </a>
+          <div class="like-button">
+            <img src="{% static 'network/heart1.png' %}"  alt="Like">
+            <a class="like-count">{{ post.likes.all.count }}</a>
+            <p class="post-date">{{ post.created_at}}</p>
           </div>
-  
           <div class="comments">
             {% for comment in post.comment_set.all %}
-              <div class="comment">
-                <p>{{ comment.user.username }}: {{ comment.text }}</p>
-              </div>
+            <div class="comment">
+                <div class="comment-header">
+                    <img src="{{ comment.user.profile.photo_url }}" alt="{{ comment.user.username }}">
+                    <div class="comments-info">
+                        <p><strong>{{ comment.user.username }}</strong></p>
+                    </div>
+                </div>
+                <div class="comment-body">
+                    <p>{{ comment.text }}</p>
+                </div>
+                <div class="like-button">
+                  <img src="{% static 'network/heart1.png' %}"  alt="Like">
+                  <a class="like-count">{{ comment.likes.all.count }}</a>
+                </div>
+                <div>
+                  <p class="comment-date">{{ comment.created_at}}</p>
+                </div>
+            </div>
             {% endfor %}
           </div>
         </div>
