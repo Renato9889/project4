@@ -31,12 +31,38 @@
     .user-profile-posts h3 {
         font-size: 20px;
     }
+    .following-button {
+      background-color: #3498db;
+      color: #ffffff; 
+      padding: 5px 10px;
+      border: none; 
+      border-radius: 5px; 
+      cursor: pointer;
+    }
 </style>
+<script>
+  function toggleFollow(user_id, action) {
+    fetch(`/toggle_follow/${user_id}/${action}/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                location.reload();
+            }
+        });
+  }
+</script>
 <div class="user-profile">
     <div class="user-profile-header">
         <img class="profile-img" src="{{ user_profile.photo_url }}" alt="{{ user.username }}">
         <h2>{{ user.username }}</h2>
         <p>{{ user.first_name }} {{ user.last_name }}</p>
+        {% if request.user.is_authenticated and user != request.user %}
+            {% if is_following %}
+                <button class="following-button" onclick="toggleFollow('{{ user.id }}', 'unfollow')">Unfollow</button>
+            {% else %}
+                <button class="following-button" onclick="toggleFollow('{{ user.id }}', 'follow')">Follow</button>
+            {% endif %}
+        {% endif %}
     </div>
     <div class="user-profile-posts">
         <h3>Posts</h3>

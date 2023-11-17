@@ -31,17 +31,18 @@ class Post(models.Model):
 
 class Comment(models.Model):
     id = models.BigAutoField(primary_key=True)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)  
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_comments')  
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(User, related_name='liked_comments', blank=True)
     
-
-
 class Profile(models.Model):
     id = models.BigAutoField(primary_key=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     followers = models.ManyToManyField(User, related_name='following', blank=True)
     photo_url = models.CharField(max_length=400, blank=True, null=True)
     posts = models.ManyToManyField(Post, related_name='posts', blank=True)
+
+    def is_followed_by(self, user):
+        return user in self.followers.all()

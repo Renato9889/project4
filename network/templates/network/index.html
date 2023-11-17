@@ -11,12 +11,13 @@
         <button type="submit">Post</button>
       </form>
   
-      
       {% for post in posts %}
-        <div class="post">
+        <div class="post" id="post-{{ post.id }}">
           <div class="post-header">
-            <img src="{{ post.author.profile.photo_url }}" alt="{{ post.author.username }}">
-            <p>{{ post.author.username }}</p>
+            <a href="{% url 'profile' user_id=post.author.id %}">
+              <img src="{{ post.author.profile.photo_url }}" alt="{{ post.author.username }}">
+              <p>{{ post.author.username }}</p>
+            </a>
           </div>
           <div class="post-body">
             <p>{{ post.text }}</p>
@@ -29,7 +30,7 @@
             <p class="post-date">{{ post.created_at}}</p>
           </div>
           <div data-post="{{ post.id }}" class="comments">
-            {% for comment in post.comment_set.all %}
+            {% for comment in post.post_comments.all %}
             <div class="comment">
                 <div class="comment-header">
                     <img src="{{ comment.user.profile.photo_url }}" alt="{{ comment.user.username }}">
@@ -52,13 +53,13 @@
             </div>
             {% endfor %}
           </div>
-          <form class="comment-form" data-post="{{ post.id }}" method="post" action="{% url 'add_comment' post.id %}" >
+          <form class="comment-form" data-post="{{ post.id }}">
             {% csrf_token %}
             <div class="form-group">
                 <textarea name="text" placeholder="Add Comment..." required></textarea>
             </div>
             <button type="button" onclick="addComment('{{ post.id }}', this.parentNode)">Comment</button>
-        </form>
+          </form>
         </div>
       {% endfor %}
       <div class="pagination">
@@ -119,7 +120,6 @@
                 if (data.error) {
                     return;
                 }
-
                 const likeButton = document.querySelector(`[data-post="${postID}"]`);
                 const likeIcon = likeButton.querySelector('img');
                 const likeCount = likeButton.nextElementSibling;
@@ -127,7 +127,6 @@
                 likeCount.textContent = data.likes_count;
             });
       }
-
       function likeComment(postID) {
         fetch(`/like_comment/${postID}/`)
             .then(response => response.json())
@@ -142,22 +141,94 @@
               likeCount.textContent = data.likes_count;
             });
       }
-      function addComment(postID, formElement) {
-        const formData = new FormData(formElement);
-        return fetch(`/add_comment/${postID}/`, {
-          method: 'POST',
-          body: formData,
+      function addComment(postID, form) {
+        const formData = new FormData(form);
+        fetch(`/add_comment/${postID}/`, {
+            method: 'POST',
+            body: formData,
         })
         .then(response => response.json())
         .then(data => {
-          formElement.reset();
-          if (data.success) {
-            const commentsContainer = document.querySelector(`[data-post="${postID}"] .comments`);
-            location.reload();
-          }
-          return data;
-        })
-      }
-    </script>
+            if (data.success) {
+                const commentText = formData.get('text');
 
+                const commentDiv = document.createElement('div');
+                commentDiv.className = 'comment';
+
+                const commentHeader = document.createElement('div');
+                commentHeader.className = 'comment-header';
+
+                const img = document.createElement('img');
+                img.src = data.user_profile_photo;
+
+                const commentsInfo = document.createElement('div');
+                commentsInfo.className = 'comments-info';
+
+                const strong = document.createElement('strong');
+                strong.textContent = data.user_username;
+
+                commentsInfo.appendChild(strong);
+                commentHeader.appendChild(img);
+                commentHeader.appendChild(commentsInfo);
+
+                const commentBody = document.createElement('div');
+                commentBody.className = 'comment-body';
+
+                const p = document.createElement('p');
+                p.textContent = commentText;
+
+                commentBody.appendChild(p);
+
+                const commentActions = document.createElement('div');
+                commentActions.className = 'comment-actions';
+                const likeButton = document.createElement('button');
+                likeButton.className = 'like-button';
+                likeButton.setAttribute('data-post', data.comment_id);
+                likeButton.onclick = function() {
+                    likeComment(data.comment_id);
+                };
+
+                const likeIcon = document.createElement('img');
+                likeIcon.src = data.liked ? '{% static "network/heart1.png" %}' : '{% static "network/heart2.png" %}';
+
+                const likeCount = document.createElement('a');
+                likeCount.className = 'like-count';
+                likeCount.textContent = '0';
+
+                const commentDate = document.createElement('p');
+                commentDate.className = 'comment-date';
+
+                const commentDateTime = new Date(data.created_at);
+
+                const formattedDate = commentDateTime.toLocaleString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: true,
+                });
+
+                commentDate.textContent = formattedDate;
+
+                likeButton.appendChild(likeIcon);
+                commentActions.appendChild(likeButton);
+                commentActions.appendChild(likeCount);
+                commentActions.appendChild(commentDate);
+
+                commentDiv.appendChild(commentHeader);
+                commentDiv.appendChild(commentBody);
+                commentDiv.appendChild(commentActions);
+
+                const commentsContainer = document.querySelector(`#post-${postID} .comments`);
+                commentsContainer.appendChild(commentDiv);
+
+                form.querySelector('textarea').value = '';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+    </script>
   {% endblock %}

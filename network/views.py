@@ -1,14 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
-from django.db import IntegrityError
-from django.http import HttpResponseRedirect
+from django.db import IntegrityError, models
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from .models import Post, Comment, Profile, User
 from .forms import PostForm, CommentForm
-from django.db import models
 from django.db.models import Count
-from django.http import JsonResponse
-
 
 def index(request):
     if not request.user.is_authenticated:
@@ -79,15 +76,36 @@ def register(request):
 def profile(request, user_id):
     if not request.user.is_authenticated:
         return redirect('login')
+
     user = get_object_or_404(User, pk=user_id)
     user_profile = get_object_or_404(Profile, user=user)
     user_posts = Post.objects.filter(author=user)
+
+    is_following = False
+    if request.user.is_authenticated:
+        is_following = user_profile.is_followed_by(request.user)
 
     return render(request, 'network/profile.html', {
         'user': user,
         'user_profile': user_profile,
         'user_posts': user_posts,
+        'is_following': is_following,
     })
+
+def toggle_follow(request, user_id, action):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    
+    target_user = get_object_or_404(User, pk=user_id)
+    user_profile = Profile.objects.get(user=request.user)
+
+    if action == 'follow':
+        user_profile.followers.add(target_user)
+    elif action == 'unfollow':
+        user_profile.followers.remove(target_user)
+
+    return JsonResponse({'status': 'success'})
+
 
 def following(request):
     pass 
@@ -137,19 +155,27 @@ def like_comment(request, comment_id):
     
     return JsonResponse({"liked": liked, "likes_count": comment.likes.count()})
 
+
 def add_comment(request, post_id):
-    if not request.user.is_authenticated:
-        return JsonResponse({"error": "You must be logged in to add comments."}, status=403)
-
-    post = get_object_or_404(Post, pk=post_id)
-
     if request.method == 'POST':
+        post = get_object_or_404(Post, pk=post_id)
         form = CommentForm(request.POST)
+
         if form.is_valid():
             comment = form.save(commit=False)
-            comment.user = request.user
             comment.post = post
+            comment.user = request.user
             comment.save()
-            return JsonResponse({'success': True})
+            response_data = {
+                'success': True,
+                'comment_id': comment.id,
+                'user_profile_photo': comment.user.profile.photo_url,
+                'user_username': comment.user.username,
+                'created_at': comment.created_at,
+            }
 
-    return JsonResponse({"error": "Invalid form data."}, status=400)
+            return JsonResponse(response_data)
+        else:
+            return JsonResponse({'error': 'Invalid form data'}, status=400)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
