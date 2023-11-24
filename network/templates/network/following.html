@@ -21,11 +21,6 @@
           </div>
           <div class="post-body">
             <p>{{ post.text }}</p>
-            {% if post.author == request.user %}
-                <a href="{% url 'edit_post' post.id %}">
-                    <img src="{% static 'network/pencil.png' %}" alt="Edit" class="edit-icon">
-                </a>
-            {% endif %}
           </div>
           <div>
             <button class="like-button" data-post="{{ post.id }}" onclick="likePost('{{post.id}}')">
@@ -46,12 +41,7 @@
                   </a>
                 </div>
                 <div class="comment-body">
-                    <p>{{ comment.text }}</p> 
-                    {% if comment.user == request.user %}
-                        <a href="{% url 'edit_comment' comment.id %}">
-                            <img src="{% static 'network/pencil.png' %}" alt="Edit" class="edit-icon">
-                        </a>
-                    {% endif %}
+                    <p>{{ comment.text }}</p>
                 </div>
                 <div>
                   <button class="like-button" data-post="{{ comment.id }}" onclick="likeComment('{{comment.id}}')">

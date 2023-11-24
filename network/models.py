@@ -14,10 +14,11 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=100, blank=False)
     last_name = models.CharField(max_length=64)
     email = models.CharField(max_length=64, validators=[validate_email])
+    following = models.ManyToManyField('self', symmetrical=False, through='Follow', related_name='followers')
 
     def __str__(self):
         return f"User: {self.first_name} {self.last_name}"
-
+    
 class Post(models.Model):
     id = models.BigAutoField(primary_key=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -40,9 +41,15 @@ class Comment(models.Model):
 class Profile(models.Model):
     id = models.BigAutoField(primary_key=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    followers = models.ManyToManyField(User, related_name='following', blank=True)
     photo_url = models.CharField(max_length=400, blank=True, null=True)
     posts = models.ManyToManyField(Post, related_name='posts', blank=True)
 
-    def is_followed_by(self, user):
-        return user in self.followers.all()
+    
+class Follow(models.Model):
+    from_user = models.ForeignKey(User, related_name='following_set', on_delete=models.CASCADE)
+    to_user = models.ForeignKey(User, related_name='follower_set', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.from_user} follows {self.to_user}"
+    

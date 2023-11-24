@@ -103,7 +103,19 @@ form button {
   border: none;
   border-radius: 50px;
   cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
 }
+
+form button:hover {
+  background-color: #3f76e4;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 
 .post {
   background-color: white;
@@ -118,7 +130,14 @@ form button {
   margin-bottom: 10px;
   font-weight: bold;
 }
-  
+
+.post-header a {
+  text-decoration: none;
+  color: black;
+  display: flex;
+  align-items: center;
+}
+
 .post-header img {
   width: 40px;
   height: 40px;
@@ -126,18 +145,31 @@ form button {
   margin-right: 10px;
   object-fit: cover;
 }
-  
+
+.post-header p {
+  margin: 0;
+}
+
+.post-body{
+  display: flex;
+  flex-direction: column;
+}
+
+.post-body a{
+  padding-left: 96%;
+}
 .post-body p {
   margin-bottom: 10px;
+  text-align: justify;
 }
 .post-date {
   color: #999;
   font-size: 10px;
-  padding-left: 550px;
+  padding-left: 590px;
 }
-  
+
 .post-footer button {
-  background-color: #134ABA;
+  background-color: #3e75e4;
   color: #fff;
   padding: 5px 10px;
   border: none;
@@ -145,12 +177,27 @@ form button {
   cursor: pointer;
   margin-right: 10px;
 }
-  
+
+.comment-body{
+  display: flex;
+  flex-direction: column;
+}
+
+.comment-body a{
+  padding-left: 96%;
+}
+
 .comment-form {
   margin-top: 10px;
   padding-left: 50px;
 }
-  
+
+.comment-body p {
+  margin: 10px;
+  text-align: justify;
+
+}
+
 .comment-form textarea {
   width: 100%;
   padding: 10px;
@@ -160,13 +207,19 @@ form button {
 }
   
 .comment-form button {
-  background-color: #134ABA;
+  background-color: #1a5fea;
   color: #fff;
-  padding: 5px 10px;
+  padding: 10px 20px;
   border: none;
   border-radius: 50px;
   cursor: pointer;
   margin-top: 5px;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.comment-form button:hover {
+  background-color: #4372d0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
   
 .like-button {
@@ -224,6 +277,14 @@ form button {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.comment-header a {
+  text-decoration: none;
+  color: black;
+  display: flex;
+  align-items: center;
 }
 
 .comment-header img {
@@ -232,6 +293,10 @@ form button {
   border-radius: 50%;
   margin-right: 10px;
   object-fit: cover;
+}
+
+.comment-header p {
+  margin: 0;
 }
 
 .comment-info p {
@@ -247,9 +312,166 @@ form button {
 
 .comments-body p {
   margin-bottom: 10px;
+  text-align: justify;
 }
 
-.post-header a {
-  color: #000000; 
-  text-decoration: none; 
+.user-profile {
+  margin: 0 auto;
+  width: 56%; 
+  padding: 20px;
+  background-color: #f0f0f0; 
+  border: 1px solid #ccc; 
+}
+
+.user-profile-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.profile-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.user-profile h2 {
+  margin: 5px 0;
+}
+
+.user-profile-posts {
+  margin-top: 20px;
+}
+.user-profile-posts h3 {
+  font-size: 20px;
+}
+
+.container-followers {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.followers-list {
+  list-style: none;
+  padding: 0;
+}
+
+.follower-item {
+  margin-bottom: 20px;
+}
+
+.follower-container {
+  background-color: #f0f0f0;
+  padding: 15px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.follower-photo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+}
+
+
+.follower-name {
+  margin-right: 10px;
+  margin-top: 10px;
+}
+
+.unfollow-button {
+  background-color: #ef1717;
+  color: #ffffff;
+  padding: 8px 15px;
+  border: none;
+  cursor: pointer;
+}
+.unfollow-button:hover {
+  background-color: #e3391e;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.unfollow-button:active {
+  background-color: #f60a0a;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: scale(0.95);
+  transition: background-color 0s, box-shadow 0s, transform 0.2s;
+}
+.following-button {
+  background-color: #2bc111;
+  color: #ffffff;
+  padding: 8px 15px;
+  border: none;
+  cursor: pointer;
+}
+
+.following-button:hover {
+  background-color: #13790c;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.following-button:active {
+  background-color: #2de70c;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: scale(0.95);
+  transition: background-color 0s, box-shadow 0s, transform 0.2s;
+}
+
+.follower-container a {
+  text-decoration: none;
+  color: black;
+  display: flex;
+  align-items: center;
+}
+
+.followers-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #134ABA;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.followers-button:hover {
+  background-color: #2980b9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.followers-button:active {
+  background-color: #2980b9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: scale(0.95);
+  transition: background-color 0s, box-shadow 0s, transform 0.2s;
+}
+
+.edit-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.delete-form{
+  display: flex;
+  padding-top: 0px;
+}
+.delete-form button {
+  background-color: #f50909; 
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.delete-form button:hover {
+  background-color: #ee5656;
 }

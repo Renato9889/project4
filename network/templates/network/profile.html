@@ -1,99 +1,69 @@
 {% extends "network/layout.html" %}
-
 {% block body %}
 {% load static %}
-<style>
-    .user-profile {
-        margin: 0 auto;
-        width: 56%; 
-        padding: 20px;
-        background-color: #f0f0f0; 
-        border: 1px solid #ccc; 
-    }
-
-    .user-profile-header {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-    .profile-img {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
-    .user-profile h2 {
-        margin: 5px 0;
-    }
-
-    .user-profile-posts {
-        margin-top: 20px;
-    }
-    .user-profile-posts h3 {
-        font-size: 20px;
-    }
-    .following-button {
-      background-color: #3498db;
-      color: #ffffff; 
-      padding: 5px 10px;
-      border: none; 
-      border-radius: 5px; 
-      cursor: pointer;
-    }
-</style>
-<script>
-  function toggleFollow(user_id, action) {
-    fetch(`/toggle_follow/${user_id}/${action}/`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                location.reload();
-            }
-        });
-  }
-</script>
 <div class="user-profile">
     <div class="user-profile-header">
-        <img class="profile-img" src="{{ user_profile.photo_url }}" alt="{{ user.username }}">
-        <h2>{{ user.username }}</h2>
-        <p>{{ user.first_name }} {{ user.last_name }}</p>
-        {% if request.user.is_authenticated and user != request.user %}
-            {% if is_following %}
-                <button class="following-button" onclick="toggleFollow('{{ user.id }}', 'unfollow')">Unfollow</button>
+        <img class="profile-img" src="{{ user_profile.photo_url }}" alt="{{ user_profile.username }}">
+        <h2>{{ user_profile.user.username }}</h2>
+        <p>{{ user_profile.user.first_name }} {{ user_profile.user.last_name }}</p>
+        <div class="follow-button">
+          {% if request.user.is_authenticated %}
+            {% if user_profile.user != request.user %}
+              {% if is_following %}
+                <button class="unfollow-button" onclick="toggleFollow('{{ user_profile.user.id }}', 'unfollow')">Unfollow</button>
+              {% else %}
+                <button class="following-button" onclick="toggleFollow('{{ user_profile.user.id }}', 'follow')">Follow</button>
+              {% endif %}
             {% else %}
-                <button class="following-button" onclick="toggleFollow('{{ user.id }}', 'follow')">Follow</button>
+              <a href="{% url 'followers' user.id %}">
+                <button class="followers-button">Followers</button> 
+              </a>
             {% endif %}
-        {% endif %}
+          {% endif %}
+        </div>
     </div>
     <div class="user-profile-posts">
-        <h3>Posts</h3>
         {% for post in user_posts %}
-        <div class="post">
+        <div class="post" id="post-{{ post.id }}">
           <div class="post-header">
-            <img src="{{ post.author.profile.photo_url }}" alt="{{ post.author.username }}">
-            <p>{{ post.author.username }}</p>
+            <a href="{% url 'profile' user_id=post.author.id %}">
+              <img src="{{ post.author.profile.photo_url }}" alt="{{ post.author.username }}">
+              <p>{{ post.author.username }}</p>
+            </a>
           </div>
           <div class="post-body">
             <p>{{ post.text }}</p>
+            {% if post.author == request.user %}
+                <a href="{% url 'edit_post' post.id %}">
+                    <img src="{% static 'network/pencil.png' %}" alt="Edit" class="edit-icon">
+                </a>
+            {% endif %}
           </div>
-          <div class="like-button">
-            <img src="{% static 'network/heart1.png' %}"  alt="Like">
+          <div>
+            <button class="like-button" data-post="{{ post.id }}" onclick="likePost('{{post.id}}')">
+              <img src="{% if request.user in post.likes.all %}{% static 'network/heart1.png' %}{% else %}{% static 'network/heart2.png' %}{% endif %}"  alt="Like">
+            </button>
             <a class="like-count">{{ post.likes.all.count }}</a>
             <p class="post-date">{{ post.created_at}}</p>
           </div>
-          <div class="comments">
-            {% for comment in post.comment_set.all %}
+          <div data-post="{{ post.id }}" class="comments">
+            {% for comment in post.post_comments.all %}
             <div class="comment">
                 <div class="comment-header">
+                  <a href="{% url 'profile' user_id=comment.user.id %}">
                     <img src="{{ comment.user.profile.photo_url }}" alt="{{ comment.user.username }}">
                     <div class="comments-info">
                         <p><strong>{{ comment.user.username }}</strong></p>
                     </div>
+                  </a>
                 </div>
                 <div class="comment-body">
                     <p>{{ comment.text }}</p>
                 </div>
-                <div class="like-button">
-                  <img src="{% static 'network/heart1.png' %}"  alt="Like">
+                <div>
+                  <button class="like-button" data-post="{{ comment.id }}" onclick="likeComment('{{comment.id}}')">
+                    <img src="{% if request.user in comment.likes.all %}{% static 'network/heart1.png' %}{% else %}{% static 'network/heart2.png' %}{% endif %}"  alt="Like">
+                  </button>
                   <a class="like-count">{{ comment.likes.all.count }}</a>
                 </div>
                 <div>
@@ -106,4 +76,55 @@
       {% endfor %}
     </div>
 </div>
+<script>
+ function toggleFollow(userId, action) {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    var followButton = document.querySelector('.follow-button');
+                    if (action === 'follow') {
+                        followButton.innerHTML = '<button class="unfollow-button" onclick="toggleFollow(' + userId + ', \'unfollow\')">Unfollow</button>';
+                    } else {
+                        followButton.innerHTML = '<button class="following-button" onclick="toggleFollow(' + userId + ', \'follow\')">Follow</button>';
+                    }
+                } else {
+                    console.error('Erro na solicitação:', xhr.status);
+                }
+            }
+        };
+        xhr.open('POST', '/toggle_follow/', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        var csrfToken = document.cookie.match(/csrftoken=([^ ;]*)/)[1];
+        xhr.send('user_id=' + userId + '&action=' + action + '&csrfmiddlewaretoken=' + csrfToken);
+  }
+  function likePost(postID) {
+        fetch(`/like/${postID}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    return;
+                }
+                const likeButton = document.querySelector(`[data-post="${postID}"]`);
+                const likeIcon = likeButton.querySelector('img');
+                const likeCount = likeButton.nextElementSibling;
+                likeIcon.src = data.liked ? '{% static "network/heart1.png" %}' : '{% static "network/heart2.png" %}';
+                likeCount.textContent = data.likes_count;
+            });
+      }
+      function likeComment(postID) {
+        fetch(`/like_comment/${postID}/`)
+            .then(response => response.json())
+            .then(data => {
+              if (data.error) {
+                return;
+              }
+              const likeButton = document.querySelector(`[data-post="${postID}"]`);
+              const likeIcon = likeButton.querySelector('img');
+              const likeCount = likeButton.nextElementSibling;
+              likeIcon.src = data.liked ? '{% static "network/heart1.png" %}' : '{% static "network/heart2.png" %}';
+              likeCount.textContent = data.likes_count;
+            });
+      }
+</script>
 {% endblock %}

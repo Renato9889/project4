@@ -1,0 +1,68 @@
+{% extends "network/layout.html" %}
+{% block body %}
+{% load static %}
+<div class="container-followers">
+    <h2>Your Followers</h2>
+    {% if following_profiles %}
+      <ul class="followers-list">
+        {% for follower in following_profiles %}
+          <li class="follower-item">
+            <div class="follower-container">
+                <div class="follower-container">
+                    <a href="{% url 'profile' user_id=follower.profile.user.id %}">
+                      <img src="{{ follower.profile.photo_url }}" alt="{{ follower.username }}" class="follower-photo">
+                      <p class="follower-name">{{ follower.username }}</p>
+                    </a>
+                </div>
+                <div class="follow-button">
+                  {% if request.user.is_authenticated and request.user != follower %}
+                    {% if follower in request.user.following.all %}
+                      <button class="unfollow-button" onclick="toggleFollow('{{ follower.id }}', 'unfollow', this)">Unfollow</button>
+                    {% else %}
+                      <button class="following-button" onclick="toggleFollow('{{ follower.id }}', 'follow', this)">Follow</button>
+                    {% endif %}
+                  {% endif %}
+                </div>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="container-followers">
+        <p class="follower-name">You don't have any followers yet.</p>
+      </div>
+    {% endif %}
+  </div>
+<script>
+    function toggleFollow(userId, action, button) {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    if (action === 'follow') {
+                        button.textContent = 'Unfollow';
+                        button.classList.remove('following-button');
+                        button.classList.add('unfollow-button');
+                        button.onclick = function () {
+                            toggleFollow(userId, 'unfollow', button);
+                        };
+                    } else {
+                        button.textContent = 'Follow';
+                        button.classList.remove('unfollow-button');
+                        button.classList.add('following-button');
+                        button.onclick = function () {
+                            toggleFollow(userId, 'follow', button);
+                        };
+                    }
+                } else {
+                    console.error('Erro na solicitação:', xhr.status);
+                }
+            }
+        };
+        xhr.open('POST', '/toggle_follow/', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        var csrfToken = document.cookie.match(/csrftoken=([^ ;]*)/)[1];
+        xhr.send('user_id=' + userId + '&action=' + action + '&csrfmiddlewaretoken=' + csrfToken);
+    }
+</script>
+{% endblock %}
